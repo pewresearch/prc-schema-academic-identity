@@ -8,7 +8,7 @@
  * @license           GPL-2.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name:       PRC Academic Identity
+ * Plugin Name:       PRC Schema - Academic Identity
  * Plugin URI:        https://github.com/pewresearch/prc-academic-identity
  * Description:       A plugin for PRC Platform that manages academic identity metadata like DOI, ORCID, etc. This plugin integrates with multiple PRC Platform plugins, including Staff Bylines, Post Like Types, and more.
  * Version:           1.0.0
