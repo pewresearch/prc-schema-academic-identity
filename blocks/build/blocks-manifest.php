@@ -36,6 +36,7 @@ return array(
 			),
 			'typography' => array(
 				'fontSize' => true,
+				'__experimentalFontFamily' => true,
 				'lineHeight' => true,
 				'letterSpacing' => true,
 				'defaultControls' => array(

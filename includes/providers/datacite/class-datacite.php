@@ -133,20 +133,57 @@ class Datacite {
 	 * @return string
 	 */
 	public static function get_doi_citation( $post_id ) {
+		$parent_id = get_post_parent( $post_id );
+		$parent_id = get_post_field( 'ID', $parent_id );
+		if ( 0 !== $parent_id ) {
+			$post_id = $parent_id;
+		}
+		$doi_data = get_post_meta( $post_id, self::$schema_meta_key, true );
+		if ( ! $doi_data ) {
+			return;
+		}
+		$doi_data = json_decode( $doi_data, true );
+		if ( ! $doi_data ) {
+			return;
+		}
 		$doi_citation = get_post_meta( $post_id, self::$schema_meta_key . '_citation', true );
 		if ( ! $doi_citation ) {
 			return;
 		}
 
 		$post_title = get_the_title( $post_id );
+		$post_date  = get_the_date( 'Y', $post_id );
 
-		$bylines = new \PRC\Platform\Staff_Bylines\Bylines( $post_id );
-		$bylines = $bylines->format( 'string' );
+		// Add functionality to get the "author" property out of the citation data.
+		// If "pew" is the author then drop the second pew research center from citaiton text.
+		$doi_author = '';
+		if ( isset( $doi_data['author'] ) ) {
+			if ( is_array( $doi_data['author'] ) && isset( $doi_data['author'][0] ) ) {
+				// Multiple authors case.
+				$author_names = array_map(
+					function ( $author ) {
+						return $author['name'] ?? '';
+					},
+					$doi_data['author']
+				);
+				$doi_author = implode( ', ', array_filter( $author_names ) );
+				$doi_author = preg_replace( '/, ([^,]+)$/', ', and $1', $doi_author );
+			} else {
+				// Single author case.
+				$doi_author = $doi_data['author']['name'] ?? '';
+			}
+		}
+		$doi_org = ' Pew Research Center';
+		if ( strpos( $doi_author, 'Pew Research' ) !== false ) {
+			$doi_org = '';
+		}
 
 		return wp_sprintf(
-			'%1$s"%2$s". Pew Research Center. doi: <a href="https://doi.org/%3$s">%3$s</a>',
-			$bylines ? $bylines . '. ' : '',
+			'%1$s %2$s "%3$s." %4$s doi: <a href="https://doi.org/%5$s">%5$s</a>',
+			$doi_author ? $doi_author . '. ' : '',
+			$post_date ? $post_date . '. ' : '',
 			$post_title,
+			$doi_org,
 			$doi_citation
 		);
 	}

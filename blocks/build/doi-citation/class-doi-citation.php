@@ -35,12 +35,12 @@ class DOI_Citation {
 		if ( null !== $loader ) {
 			$loader->add_action( 'init', $this, 'block_init' );
 			$loader->add_filter( 'vip_block_data_api__sourced_block_result', $this, 'add_data_to_vip_blocks_api', 10, 4 );
-			$loader->add_filter( 'render_block', $this, 'render_doi_citation_from_post_content', 10, 3 );
+			$loader->add_filter( 'render_block', $this, 'remove_doi_citation_from_post_content', 10, 3 );
 		}
 	}
 
 	/**
-	 * Remove the sub title from the post content as we display it
+	 * Remove the DOI citation from the post content as we display it
 	 * in a pattern in the template instead.
 	 *
 	 * @hook render_block
@@ -50,7 +50,7 @@ class DOI_Citation {
 	 * @param array  $wp_block The WP block.
 	 * @return string The block content.
 	 */
-	public function render_doi_citation_from_post_content( $block_content, $block, $wp_block ) {
+	public function remove_doi_citation_from_post_content( $block_content, $block, $wp_block ) {
 		if ( is_singular( 'post' ) && 'core/post-content' === $block['blockName'] ) {
 			$block_content = preg_replace( '/<p[^>]*class="[^"]*\bwp-block-prc-block-doi-citation\b[^"]*"[^>]*>.*?<\/p>/s', '', $block_content );
 		}
@@ -73,7 +73,7 @@ class DOI_Citation {
 		}
 
 		// Add custom attribute to REST API result.
-		$sourced_block['attributes']['content'] = get_post_meta( $post_id, 'datacite_doi_citation', true );
+		$sourced_block['attributes']['content'] = \PRC\Platform\Academic_Identity\Providers\Datacite::get_doi_citation( $post_id );
 
 		return $sourced_block;
 	}

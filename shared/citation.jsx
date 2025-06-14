@@ -59,10 +59,10 @@ function Citation({
 	editingAsRichText = false,
 	onChange = () => {},
 }) {
-	const t = sprintf(`"%s"`, title);
+	const t = sprintf(`"%s."`, title);
 	return(
 		<p>
-			<span>Doe, John. {date}. {t}. Pew Research Center. doi:</span>
+			<span>Doe, John. {date}. {t} Pew Research Center. doi:</span>
 			{' '}
 			{ !allowEditing ? (
 				<span>

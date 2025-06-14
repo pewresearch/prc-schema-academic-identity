@@ -8,11 +8,6 @@
 namespace PRC\Platform\Academic_Identity;
 
 $context_post_id = $block->context['postId'];
-$parent_post_id  = wp_get_post_parent_id( $context_post_id );
-// If the post is a child do not render the sub title.
-if ( 0 !== $parent_post_id ) {
-	return;
-}
 
 $text_align = isset( $attributes['textAlign'] ) ? $attributes['textAlign'] : 'left';
 
