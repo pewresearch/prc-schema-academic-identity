@@ -41,6 +41,7 @@ export default function Edit({
 	setAttributes,
 	insertBlocksAfter,
 	context,
+	__unstableLayoutClassNames: layoutClassNames,
 }) {
 	const { textAlign } = attributes;
 	const { postId, postType } = context;
@@ -51,7 +52,7 @@ export default function Edit({
 	const doiCitation = meta?.datacite_doi_citation || 'XX.XXX/XXXXX';
 
 	const blockProps = useBlockProps({
-		className: classnames(className, {
+		className: classnames(className, layoutClassNames, {
 			[`has-text-align-${textAlign}`]: textAlign,
 		}),
 	});

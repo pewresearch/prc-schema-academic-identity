@@ -160,26 +160,29 @@ class Datacite {
 		if ( isset( $doi_data['author'] ) ) {
 			if ( is_array( $doi_data['author'] ) && isset( $doi_data['author'][0] ) ) {
 				// Multiple authors case.
-				$author_names = array_map(
-					function ( $author ) {
-						return $author['name'] ?? '';
-					},
-					$doi_data['author']
-				);
+				$author_names = array();
+				foreach ( $doi_data['author'] as $index => $author ) {
+					if ( 0 === $index ) {
+						$author_names[] = $author['familyName'] . ', ' . $author['givenName'];
+					} else {
+						$author_names[] = $author['givenName'] . ' ' . $author['familyName'];
+					}
+				}
 				$doi_author = implode( ', ', array_filter( $author_names ) );
+				// If there's a comma at the end of the string, add "and" to the end.
 				$doi_author = preg_replace( '/, ([^,]+)$/', ', and $1', $doi_author );
 			} else {
 				// Single author case.
 				$doi_author = $doi_data['author']['name'] ?? '';
 			}
 		}
-		$doi_org = ' Pew Research Center';
+		$doi_org = ' Pew Research Center.';
 		if ( strpos( $doi_author, 'Pew Research' ) !== false ) {
 			$doi_org = '';
 		}
 
 		return wp_sprintf(
-			'%1$s %2$s "%3$s." %4$s doi: <a href="https://doi.org/%5$s">%5$s</a>',
+			'%1$s %2$s "%3$s." %4$s doi: <a href="https://doi.org/%5$s">%5$s</a>.',
 			$doi_author ? $doi_author . '. ' : '',
 			$post_date ? $post_date . '. ' : '',
 			$post_title,
