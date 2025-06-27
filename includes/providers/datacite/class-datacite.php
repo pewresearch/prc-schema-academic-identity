@@ -165,15 +165,19 @@ class Datacite {
 					if ( 0 === $index ) {
 						$author_names[] = $author['familyName'] . ', ' . $author['givenName'];
 					} else {
-						$author_names[] = $author['givenName'] . ' ' . $author['familyName'];
+						// Remove any trailing spaces.
+						$name           = $author['givenName'] . ' ' . $author['familyName'];
+						$author_names[] = trim( $name );
 					}
 				}
-				$doi_author = implode( ', ', array_filter( $author_names ) );
-				// If there's a comma at the end of the string, add "and" to the end.
-				$doi_author = preg_replace( '/, ([^,]+)$/', ', and $1', $doi_author );
+				if ( count( $author_names ) >= 3 ) {
+					$doi_author = implode( ', ', array_slice( $author_names, 0, -1 ) ) . ', and ' . $author_names[ count( $author_names ) - 1 ];
+				} else {
+					$doi_author = implode( ', and ', $author_names );
+				}
 			} else {
 				// Single author case.
-				$doi_author = $doi_data['author']['name'] ?? '';
+				$doi_author = $doi_data['author']['familyName'] . ', ' . $doi_data['author']['givenName'];
 			}
 		}
 		$doi_org = ' Pew Research Center.';
@@ -181,8 +185,11 @@ class Datacite {
 			$doi_org = '';
 		}
 
+		$post_title = $post_title . ( ! preg_match( '/[.!?]$/', $post_title ) ? '.' : '' );
+		// $post_title = preg_replace( "/'([.!?])$/", "$1'", $post_title );
+
 		return wp_sprintf(
-			'%1$s %2$s "%3$s." %4$s doi: <a href="https://doi.org/%5$s">%5$s</a>.',
+			'%1$s %2$s "%3$s" %4$s doi: <a href="https://doi.org/%5$s">%5$s</a>.',
 			$doi_author ? $doi_author . '. ' : '',
 			$post_date ? $post_date . '. ' : '',
 			$post_title,
