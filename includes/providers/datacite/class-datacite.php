@@ -158,10 +158,12 @@ class Datacite {
 		// If "pew" is the author then drop the second pew research center from citaiton text.
 		$doi_author = '';
 		if ( isset( $doi_data['author'] ) ) {
-			if ( is_array( $doi_data['author'] ) && isset( $doi_data['author'][0] ) ) {
+			$authors = $doi_data['author'];
+			// Check if author is an array of arrays.
+			if ( is_array( $authors ) && isset( $authors[0] ) && is_array( $authors[0] ) ) {
 				// Multiple authors case.
 				$author_names = array();
-				foreach ( $doi_data['author'] as $index => $author ) {
+				foreach ( $authors as $index => $author ) {
 					if ( 0 === $index ) {
 						$author_names[] = $author['familyName'] . ', ' . $author['givenName'];
 					} else {
@@ -175,21 +177,23 @@ class Datacite {
 				} else {
 					$doi_author = implode( ', and ', $author_names );
 				}
-			} else {
-				// Single author case.
-				$doi_author = $doi_data['author']['familyName'] . ', ' . $doi_data['author']['givenName'];
+			} elseif ( is_array( $authors ) && ! empty( $authors ) ) {
+				if ( array_key_exists( 'familyName', $authors ) && array_key_exists( 'givenName', $authors ) ) {
+					$doi_author = $authors['familyName'] . ', ' . $authors['givenName'];
+				} else {
+					$doi_author = $authors['name'];
+				}
 			}
 		}
-		$doi_org = ' Pew Research Center.';
+		$doi_org = ' Pew Research Center. ';
 		if ( strpos( $doi_author, 'Pew Research' ) !== false ) {
 			$doi_org = '';
 		}
 
 		$post_title = $post_title . ( ! preg_match( '/[.!?]$/', $post_title ) ? '.' : '' );
-		// $post_title = preg_replace( "/'([.!?])$/", "$1'", $post_title );
 
 		return wp_sprintf(
-			'%1$s %2$s "%3$s" %4$s doi: <a href="https://doi.org/%5$s">%5$s</a>.',
+			'%1$s %2$s "%3$s" %4$sdoi: <a href="https://doi.org/%5$s">%5$s</a>.',
 			$doi_author ? $doi_author . '. ' : '',
 			$post_date ? $post_date . '. ' : '',
 			$post_title,
