@@ -150,6 +150,9 @@ class Datacite {
 		if ( ! $doi_citation ) {
 			return;
 		}
+		if ( empty( $doi_citation ) ) {
+			return;
+		}
 
 		$post_title = get_the_title( $post_id );
 		$post_date  = get_the_date( 'Y', $post_id );

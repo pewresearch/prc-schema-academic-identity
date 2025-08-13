@@ -13,6 +13,10 @@ $text_align = isset( $attributes['textAlign'] ) ? $attributes['textAlign'] : 'le
 
 $citation_text = \PRC\Platform\Academic_Identity\Providers\Datacite::get_doi_citation( $context_post_id );
 
+if ( empty( $citation_text ) ) {
+	return;
+}
+
 echo wp_sprintf(
 	'<div %1$s><h5>Recommended Citation:</h5><p>%2$s</p></div>',
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
