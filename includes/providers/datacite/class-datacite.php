@@ -135,13 +135,29 @@ class Datacite {
 	public static function get_doi_citation( $post_id ) {
 		$parent_id = get_post_parent( $post_id );
 		$parent_id = get_post_field( 'ID', $parent_id );
-		if ( 0 !== $parent_id ) {
-			$post_id = $parent_id;
+
+		// If the post is a dataset taxonomy term, get the DOI data from the related dataset post.
+		if ( is_tax( 'datasets' ) ) {
+			$dataset_term_id = get_queried_object_id();
+			$dataset         = \TDS\get_related_post( $dataset_term_id, 'datasets' );
+
+			// Check if we got a valid dataset object before accessing its ID.
+			if ( $dataset && is_object( $dataset ) && isset( $dataset->ID ) ) {
+				$post_id = $dataset->ID;
+			} else {
+				// If we can't get a valid dataset, return early.
+				return;
+			}
 		}
+
+		// First check if the post contains schema data.
 		$doi_data = get_post_meta( $post_id, self::$schema_meta_key, true );
-		if ( ! $doi_data ) {
-			return;
+		// If the post contains no schema data and it's not a dataset taxonomy term and it has a parent post, check the parent post.
+		if ( ! $doi_data && 0 !== $parent_id && ! is_tax( 'datasets' ) ) {
+				$post_id  = $parent_id;
+				$doi_data = get_post_meta( $post_id, self::$schema_meta_key, true );
 		}
+
 		$doi_data = json_decode( $doi_data, true );
 		if ( ! $doi_data ) {
 			return;

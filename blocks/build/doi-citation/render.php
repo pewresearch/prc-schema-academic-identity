@@ -18,7 +18,7 @@ if ( empty( $citation_text ) ) {
 }
 
 echo wp_sprintf(
-	'<div %1$s><h5>Recommended Citation:</h5><p>%2$s</p></div>',
+	'<div %1$s><strong>RECOMMENDED CITATION:</strong><p>%2$s</p></div>',
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	get_block_wrapper_attributes(
 		array(
