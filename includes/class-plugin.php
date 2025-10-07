@@ -73,8 +73,8 @@ class Plugin {
 		// Initialize the loader.
 		$this->loader = new Loader();
 
-		// Load the blocks.
-		require_once plugin_dir_path( __DIR__ ) . '/blocks/class-blocks.php';
+		// Load block classes.
+		require_once plugin_dir_path( __DIR__ ) . '/build/doi-citation/class-doi-citation.php';
 
 		// Load the providers.
 		require_once plugin_dir_path( __DIR__ ) . '/includes/providers/datacite/class-datacite.php';
@@ -87,9 +87,15 @@ class Plugin {
 	 * @access   private
 	 */
 	private function init_dependencies() {
-		new Blocks( $this->get_loader() );
-
 		new Providers\Datacite( $this->get_loader() );
+
+		// Initialize blocks.
+		wp_register_block_metadata_collection(
+			plugin_dir_path( __DIR__ ) . 'build',
+			plugin_dir_path( __DIR__ ) . 'build/blocks-manifest.php'
+		);
+
+		new DOI_Citation( $this->get_loader() );
 	}
 
 	/**

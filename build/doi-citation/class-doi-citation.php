@@ -86,6 +86,6 @@ class DOI_Citation {
 	 * @see https://developer.wordpress.org/reference/functions/register_block_type/
 	 */
 	public function block_init() {
-		register_block_type_from_metadata( PRC_ACADEMIC_IDENTITY_BLOCKS_DIR . '/build/doi-citation' );
+		register_block_type_from_metadata( PRC_ACADEMIC_IDENTITY_BLOCKS_DIR . '/doi-citation' );
 	}
 }

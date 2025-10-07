@@ -18,7 +18,7 @@ import { useEntityProp } from '@wordpress/core-data';
 /**
  * Internal Dependencies
  */
-import Citation from '../../../shared/citation';
+import Citation from '../../shared/citation';
 
 /**
  * The edit function describes the structure of your block in the context of the

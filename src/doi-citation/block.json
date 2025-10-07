@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "prc-block/doi-citation",
+	"version": "1.0.0",
+	"title": "DOI Citation",
+	"description": "Displays the DOI citation of a post.",
+	"category": "layout",
+	"attributes": {},
+	"example": {
+		"attributes": {}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"multiple": false,
+		"color": {
+			"text": true,
+			"background": false,
+			"link": true,
+			"heading": true
+		},
+		"spacing": {
+			"margin": ["top", "bottom"],
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"__experimentalFontFamily": true,
+			"lineHeight": true,
+			"letterSpacing": true,
+			"defaultControls": {
+				"fontSize": true
+			}
+		}
+	},
+	"usesContext": ["postType", "postId"],
+	"textdomain": "post-doi-citation",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

@@ -8,7 +8,7 @@
  * WordPress Dependencies
  */
 import { registerBlockType } from '@wordpress/blocks';
-import Icon from '../../../shared/icon';
+import Icon from '../../shared/icon';
 
 /**
  * Internal Dependencies

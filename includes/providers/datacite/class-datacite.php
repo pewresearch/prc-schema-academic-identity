@@ -192,9 +192,9 @@ class Datacite {
 					}
 				}
 				if ( count( $author_names ) >= 3 ) {
-					$doi_author = implode( ', ', array_slice( $author_names, 0, -1 ) ) . ', and ' . $author_names[ count( $author_names ) - 1 ];
+					$doi_author = implode( ', ', array_slice( $author_names, 0, -1 ) ) . ' and ' . $author_names[ count( $author_names ) - 1 ];
 				} else {
-					$doi_author = implode( ', and ', $author_names );
+					$doi_author = implode( ' and ', $author_names );
 				}
 			} elseif ( is_array( $authors ) && ! empty( $authors ) ) {
 				if ( array_key_exists( 'familyName', $authors ) && array_key_exists( 'givenName', $authors ) ) {
