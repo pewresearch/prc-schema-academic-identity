@@ -7,6 +7,10 @@
 
 namespace PRC\Platform\Academic_Identity;
 
+if ( ! array_key_exists( 'postId', $block->context ) ) {
+	return;
+}
+
 $context_post_id = $block->context['postId'];
 
 $text_align = isset( $attributes['textAlign'] ) ? $attributes['textAlign'] : 'left';

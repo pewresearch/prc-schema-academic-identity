@@ -12,6 +12,7 @@ import {
 	useBlockProps,
 	BlockControls,
 	AlignmentControl,
+	RichText
 } from '@wordpress/block-editor';
 import { useEntityProp } from '@wordpress/core-data';
 
@@ -43,7 +44,7 @@ export default function Edit({
 	context,
 	__unstableLayoutClassNames: layoutClassNames,
 }) {
-	const { textAlign } = attributes;
+	const { textAlign, label } = attributes;
 	const { postId, postType } = context;
 	const [postTitle] = useEntityProp('postType', postType, 'title', postId);
 	const [postDate] = useEntityProp('postType', postType, 'date', postId);
@@ -80,7 +81,13 @@ export default function Edit({
 				/>
 			</BlockControls>
 			<div {...blockProps}>
-				<h5>Recommended Citation:</h5>
+				<RichText
+					tagName="h5"
+					value={label}
+					onChange={(value) => setAttributes({ label: value })}
+					placeholder={__('Recommended Citation:', 'prc-academic-identity')}
+					allowedFormats={[]}
+				/>
 				<Citation
 					date={date}
 					title={title}

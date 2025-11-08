@@ -7,6 +7,12 @@
 
 namespace PRC\Platform\Academic_Identity;
 
+if ( ! array_key_exists( 'postId', $block->context ) ) {
+	return;
+}
+
+$label = isset( $attributes['label'] ) ? $attributes['label'] : 'RECOMMENDED CITATION:';
+
 $context_post_id = $block->context['postId'];
 
 $text_align = isset( $attributes['textAlign'] ) ? $attributes['textAlign'] : 'left';
@@ -18,13 +24,12 @@ if ( empty( $citation_text ) ) {
 }
 
 echo wp_sprintf(
-	'<div %1$s><strong>RECOMMENDED CITATION:</strong><p>%2$s</p></div>',
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	'<div %1$s><h5>%2$s</h5><p>%3$s</p></div>',
 	get_block_wrapper_attributes(
 		array(
 			'class' => 'has-text-align-' . $text_align,
 		)
 	),
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	$citation_text
+	$label, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	$citation_text, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 );
