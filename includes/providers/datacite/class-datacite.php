@@ -183,12 +183,20 @@ class Datacite {
 				// Multiple authors case.
 				$author_names = array();
 				foreach ( $authors as $index => $author ) {
-					if ( 0 === $index ) {
-						$author_names[] = $author['familyName'] . ', ' . $author['givenName'];
-					} else {
-						// Remove any trailing spaces.
-						$name           = $author['givenName'] . ' ' . $author['familyName'];
-						$author_names[] = trim( $name );
+					if (
+						is_array( $author )
+						&& array_key_exists( 'familyName', $author )
+						&& array_key_exists( 'givenName', $author )
+					) {
+						if ( 0 === $index ) {
+							$author_names[] = $author['familyName'] . ', ' . $author['givenName'];
+						} else {
+							// Remove any trailing spaces.
+							$name           = $author['givenName'] . ' ' . $author['familyName'];
+							$author_names[] = trim( $name );
+						}
+					} elseif ( is_array( $author ) && array_key_exists( 'name', $author ) ) {
+						$author_names[] = $author['name'];
 					}
 				}
 				if ( count( $author_names ) >= 3 ) {
@@ -199,7 +207,7 @@ class Datacite {
 			} elseif ( is_array( $authors ) && ! empty( $authors ) ) {
 				if ( array_key_exists( 'familyName', $authors ) && array_key_exists( 'givenName', $authors ) ) {
 					$doi_author = $authors['familyName'] . ', ' . $authors['givenName'];
-				} else {
+				} elseif ( array_key_exists( 'name', $authors ) ) {
 					$doi_author = $authors['name'];
 				}
 			}
