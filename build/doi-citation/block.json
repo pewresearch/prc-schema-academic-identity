@@ -8,7 +8,11 @@
 	"category": "layout",
 	"attributes": {},
 	"example": {
-		"attributes": {}
+		"attributes": {
+			"label": {
+				"type": "string"
+			}
+		}
 	},
 	"supports": {
 		"anchor": true,
@@ -25,8 +29,8 @@
 			"padding": true
 		},
 		"typography": {
-			"fontSize": true,
 			"__experimentalFontFamily": true,
+			"fontSize": true,
 			"lineHeight": true,
 			"letterSpacing": true,
 			"defaultControls": {

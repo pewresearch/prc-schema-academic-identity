@@ -1,56 +1,120 @@
 /**
  * WordPress Dependencies
  */
-import {
-	RichText,
-} from '@wordpress/block-editor';
+import { RichText } from '@wordpress/block-editor';
 import { TextControl } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
-import { createBlock, getDefaultBlockName } from '@wordpress/blocks';
+import { sprintf, __ } from '@wordpress/i18n';
 
-const DOI_CITATION_REGEX = /(https:\/\/doi\.org\/)?(\d{2}\.\d{5}\/[A-Za-z0-9-]+)/;
+const DOI_CITATION_REGEX =
+	/(https:\/\/doi\.org\/)?(\d{2}\.\d{5}\/[A-Za-z0-9-]+)/;
 
+/**
+ * Validates if a string is valid JSON.
+ *
+ * @param {string} str - The string to validate.
+ * @return {boolean} True if valid JSON, false otherwise.
+ */
 const isValidJSON = (str) => {
 	try {
 		JSON.parse(str);
 		return true;
-	} catch (e) {
+	} catch {
 		return false;
 	}
 };
 
+/**
+ * Extracts DOI citation from a JSON string.
+ * Supports three formats: JSON-LD (@id), DataCite (id), and legacy (data.id).
+ *
+ * @param {string} value - JSON string containing DOI data.
+ * @return {string|null} The extracted DOI citation or null if not found.
+ */
 const extractDoiCitation = (value) => {
-	console.log('extractedCitation in:', value);
-	if (value && typeof value === 'string' && isValidJSON(value)) {
-		try {
-			value = JSON.parse(value);
-		} catch (e) {
-			console.error('Failed to parse DOI JSON:', e);
-			return null;
-		}
-	} else {
-		console.warn('Invalid JSON provided for DOI citation');
+	if (!value || typeof value !== 'string' || !isValidJSON(value)) {
 		return null;
 	}
-	// Check if data is a valid property of the object
-	console.log('passed...', value);
-	if (value && value['@id']) {
-		// Check if the data.id is a valid DOI citation
-		if (DOI_CITATION_REGEX.test(value['@id'])) {
-			// Then extract the DOI citation
-			return value['@id'].match(DOI_CITATION_REGEX)[2];
-		}
+
+	let parsed;
+	try {
+		parsed = JSON.parse(value);
+	} catch {
+		return null;
 	}
-	console.log('passed...', value.data);
-	if (value && value.data.id) {
-		if (DOI_CITATION_REGEX.test(value.data.id)) {
-			// Then extract the DOI citation
-			return value.data.id.match(DOI_CITATION_REGEX)[2];
-		}
+
+	// Check for JSON-LD format (@id property)
+	if (parsed['@id'] && DOI_CITATION_REGEX.test(parsed['@id'])) {
+		return parsed['@id'].match(DOI_CITATION_REGEX)[2];
 	}
+
+	// Check for DataCite format (direct id property)
+	if (parsed.id && DOI_CITATION_REGEX.test(parsed.id)) {
+		return parsed.id.match(DOI_CITATION_REGEX)[2];
+	}
+
+	// Check for legacy format (nested data.id property)
+	if (parsed.data?.id && DOI_CITATION_REGEX.test(parsed.data.id)) {
+		return parsed.data.id.match(DOI_CITATION_REGEX)[2];
+	}
+
 	return null;
 };
 
+/**
+ * Renders the DOI citation link or editor.
+ *
+ * @param {Object}   props                   Component props.
+ * @param {string}   props.doiCitation       The DOI citation string.
+ * @param {boolean}  props.allowEditing      Whether editing is allowed.
+ * @param {boolean}  props.editingAsRichText Whether to use RichText editor.
+ * @param {Function} props.onChange          Change handler for editable citation.
+ * @return {JSX.Element} The citation input/display element.
+ */
+function CitationInput({
+	doiCitation,
+	allowEditing,
+	editingAsRichText,
+	onChange,
+}) {
+	if (!allowEditing) {
+		return (
+			<span>
+				<a href={`https://doi.org/${doiCitation}`}>{doiCitation}</a>
+			</span>
+		);
+	}
+
+	if (editingAsRichText) {
+		return (
+			<RichText
+				tagName="span"
+				onChange={onChange}
+				allowedFormats={[]}
+				value={doiCitation}
+				placeholder={__(
+					'Citation ID Here…',
+					'prc-schema-academic-identity'
+				)}
+				disableLineBreaks
+			/>
+		);
+	}
+
+	return <TextControl value={doiCitation} onChange={onChange} />;
+}
+
+/**
+ * Citation component for displaying DOI citations.
+ *
+ * @param {Object}   props                   Component props.
+ * @param {string}   props.date              Publication date/year.
+ * @param {string}   props.title             Article title.
+ * @param {string}   props.doiCitation       DOI citation string.
+ * @param {boolean}  props.allowEditing      Whether to allow editing.
+ * @param {boolean}  props.editingAsRichText Whether to use RichText for editing.
+ * @param {Function} props.onChange          Handler for citation changes.
+ * @return {JSX.Element} The citation paragraph element.
+ */
 function Citation({
 	date = '2025',
 	title = 'Title of the Article',
@@ -59,36 +123,24 @@ function Citation({
 	editingAsRichText = false,
 	onChange = () => {},
 }) {
-	const t = sprintf(`"%s."`, title);
-	return(
+	/* translators: %s: article title wrapped in quotes with period */
+	const formattedTitle = sprintf(
+		/* translators: %s: article title */
+		__('"%s."', 'prc-schema-academic-identity'),
+		title
+	);
+
+	return (
 		<p>
-			<span>Doe, John. {date}. {t} Pew Research Center. doi:</span>
-			{' '}
-			{ !allowEditing ? (
-				<span>
-					<a href={`https://doi.org/${doiCitation}`}>{doiCitation}</a>
-				</span>
-			) : (
-				editingAsRichText ? (
-					<RichText
-						tagName="span"
-						onChange={onChange}
-						allowedFormats={[]}
-						keepPlaceholderOnFocus
-						value={doiCitation}
-						placeholder={'Citation ID Here...'}
-						disableLineBreaks
-						__unstableOnSplitAtEnd={() =>
-							insertBlocksAfter(createBlock(getDefaultBlockName()))
-						}
-					/>
-				) : (
-					<TextControl
-						value={doiCitation}
-						onChange={onChange}
-					/>
-				)
-			)}
+			<span>
+				Doe, John. {date}. {formattedTitle} Pew Research Center. doi:
+			</span>{' '}
+			<CitationInput
+				doiCitation={doiCitation}
+				allowEditing={allowEditing}
+				editingAsRichText={editingAsRichText}
+				onChange={onChange}
+			/>
 		</p>
 	);
 }

@@ -14,7 +14,9 @@ return array(
 		),
 		'example' => array(
 			'attributes' => array(
-				
+				'label' => array(
+					'type' => 'string'
+				)
 			)
 		),
 		'supports' => array(
@@ -35,8 +37,8 @@ return array(
 				'padding' => true
 			),
 			'typography' => array(
-				'fontSize' => true,
 				'__experimentalFontFamily' => true,
+				'fontSize' => true,
 				'lineHeight' => true,
 				'letterSpacing' => true,
 				'defaultControls' => array(
