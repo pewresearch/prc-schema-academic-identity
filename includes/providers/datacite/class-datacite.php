@@ -348,11 +348,11 @@ class Datacite {
 			?>
 				{
 					"@context" : "https://schema.org",
-					"@id" : <?php echo $id; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>,
+					"@id" : <?php echo wp_json_encode( $id ); ?>,
 					"@type" : "DataCatalog",
 					"name" : "Pew Research Center - Datasets",
 					"creator" : <?php echo $creator; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>,
-					"description" : <?php echo $description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>,
+					"description" : <?php echo wp_json_encode( $description ); ?>,
 					"funder" : [
 						<?php foreach ( $funders as $funder ) : ?>
 							<?php echo wp_json_encode( $funder ); ?>,
