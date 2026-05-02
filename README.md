@@ -10,7 +10,7 @@ The plugin is part of PRC's Open Science initiative. See the [Wiki](https://plat
 
 ### Dependencies
 
-- **Upstream**: `prc-platform-core`, `prc-staff-bylines`, `prc-taxonomies` (Term Data Store / `TDS` for dataset taxonomy lookups), VIP Block Data API (`vip_block_data_api__sourced_block_result`)
+- **Upstream**: `prc-platform-core`, `prc-staff-bylines`, `prc-taxonomies` (Term Data Store / `PRC\TDS` for dataset taxonomy lookups; Composer package `prc/term-data-store`), VIP Block Data API (`vip_block_data_api__sourced_block_result`)
 - **Downstream**: Any template or pattern that places the `prc-block/doi-citation` block; any consumer of the `datacite_doi` REST field on post objects
 
 ## Architecture
@@ -50,6 +50,12 @@ The inspector sidebar panel is built separately (its own `wp-scripts` entry poin
 
 ## Local Development
 
+Install PHP dependencies (Term Data Store) before running the plugin; `vendor/` is gitignored in this monorepo:
+
+```bash
+composer install
+```
+
 ```bash
 # Build blocks and inspector panel
 npm run build -w @prc/schema-academic-identity
@@ -78,8 +84,8 @@ The `build` script runs two entries: `build:blocks` (the `doi-citation` block vi
 ### Citation not resolving on dataset taxonomy pages
 
 **Symptom**: `Datacite::get_doi_citation()` returns nothing on a `datasets` taxonomy archive page.  
-**Cause**: The method calls `TDS\get_related_post()` to map the taxonomy term to its related dataset post. If Term Data Store returns `null` or the returned object has no `ID`, the method returns early.  
-**Fix**: Verify the `datasets` term has a related post configured via the Term Data Store plugin. Check that `TDS\get_related_post( $term_id, 'datasets' )` returns a valid post object.
+**Cause**: The method calls `PRC\TDS\get_related_post()` to map the taxonomy term to its related dataset post. If Term Data Store returns `null` or the returned object has no `ID`, the method returns early.  
+**Fix**: Verify the `datasets` term has a related post configured via the Term Data Store plugin. Check that `PRC\TDS\get_related_post( $term_id, 'datasets' )` returns a valid post object.
 
 ### Inspector panel not appearing in the block editor
 

@@ -19,7 +19,7 @@
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       prc-academic-identity
- * Requires Plugins:  prc-platform-core, prc-staff-bylines
+ * Requires Plugins:  prc-scripts, prc-staff-bylines
  */
 
 namespace PRC\Platform\Academic_Identity;
@@ -31,6 +31,19 @@ if ( ! defined( 'WPINC' ) ) {
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+if ( ! defined( 'DEFAULT_TECHNICAL_CONTACT' ) ) {
+	define( 'DEFAULT_TECHNICAL_CONTACT', 'webdev@pewresearch.org' );
+}
+
+// Load the Jetpack Autoloader so runtime version-selection can pick the
+// highest version across all plugins that ship the same library dep
+// (matches prc-datasets / prc-platform-core pattern).
+$prc_academic_identity_autoloader = __DIR__ . '/vendor/autoload_packages.php';
+if ( file_exists( $prc_academic_identity_autoloader ) ) {
+	require_once $prc_academic_identity_autoloader;
+}
+unset( $prc_academic_identity_autoloader );
 
 define( 'PRC_ACADEMIC_IDENTITY_FILE', __FILE__ );
 define( 'PRC_ACADEMIC_IDENTITY_DIR', __DIR__ );

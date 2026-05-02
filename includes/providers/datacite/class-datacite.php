@@ -138,11 +138,14 @@ class Datacite {
 
 		// If the post is a dataset taxonomy term, get the DOI data from the related dataset post.
 		if ( is_tax( 'datasets' ) ) {
+			if ( ! function_exists( '\\PRC\\TDS\\get_related_post' ) ) {
+				return;
+			}
 			$dataset_term_id = get_queried_object_id();
-			$dataset         = \TDS\get_related_post( $dataset_term_id, 'datasets' );
+			$dataset         = \PRC\TDS\get_related_post( $dataset_term_id, 'datasets' );
 
 			// Check if we got a valid dataset object before accessing its ID.
-			if ( $dataset && is_object( $dataset ) && isset( $dataset->ID ) ) {
+			if ( $dataset instanceof \WP_Post ) {
 				$post_id = $dataset->ID;
 			} else {
 				// If we can't get a valid dataset, return early.
@@ -253,7 +256,7 @@ class Datacite {
 			return;
 		}
 		// Double check the current post type is one of the enabled post types.
-		$current_admin_screen_post_type = \PRC\Platform\get_wp_admin_current_post_type();
+		$current_admin_screen_post_type = \PRC\BlockUtils\get_wp_admin_current_post_type();
 		if ( ! in_array( $current_admin_screen_post_type, self::get_enabled_post_types() ) ) {
 			return;
 		}
@@ -277,10 +280,16 @@ class Datacite {
 		$schema_class = null;
 		if ( is_singular() || is_tax() ) {
 			if ( is_tax() ) {
+				if ( ! function_exists( '\\PRC\\TDS\\get_related_post' ) ) {
+					return;
+				}
 				$term_id  = get_queried_object_id();
 				$taxonomy = get_queried_object()->taxonomy;
-				$post     = \TDS\get_related_post( $term_id, $taxonomy );
-				$post_id  = get_post_field( 'ID', $post );
+				$post     = \PRC\TDS\get_related_post( $term_id, $taxonomy );
+				if ( ! $post instanceof \WP_Post ) {
+					return;
+				}
+				$post_id = $post->ID;
 			} else {
 				$post_id = get_the_ID();
 			}
