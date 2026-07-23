@@ -42,24 +42,32 @@ export default function DataciteDOISchemaPanel({
 	const metaRef = useRef(meta);
 	metaRef.current = meta;
 
+	// Write settled local edits to meta. Compare against metaRef (not metaDoi /
+	// metaCitation deps) so a meta update after DOI extraction cannot re-enter
+	// this effect while debouncedCitation is still stale and wipe the citation.
 	useEffect(() => {
 		const m = metaRef.current;
-		let nextDoi = m?.datacite_doi ?? '';
-		let nextCitation = m?.datacite_doi_citation ?? '';
+		const currentDoi = m?.datacite_doi ?? '';
+		const currentCitation = m?.datacite_doi_citation ?? '';
+		let nextDoi = currentDoi;
+		let nextCitation = currentCitation;
 		let extractedCitation = null;
 
-		if (debouncedDoi !== metaDoi) {
+		if (debouncedDoi !== currentDoi) {
 			nextDoi = debouncedDoi;
 			extractedCitation = extractDoiCitation(debouncedDoi);
 		}
-		if (debouncedCitation !== metaCitation) {
+		if (debouncedCitation !== currentCitation) {
 			nextCitation = debouncedCitation;
 		}
 		if (extractedCitation && extractedCitation !== nextCitation) {
 			nextCitation = extractedCitation;
+			// Keep local citation aligned immediately so the citation debounce
+			// cannot later overwrite meta with a stale empty value.
+			setLocalCitation(extractedCitation);
 		}
 
-		if (nextDoi === metaDoi && nextCitation === metaCitation) {
+		if (nextDoi === currentDoi && nextCitation === currentCitation) {
 			return;
 		}
 
@@ -68,7 +76,7 @@ export default function DataciteDOISchemaPanel({
 			datacite_doi: nextDoi,
 			datacite_doi_citation: nextCitation,
 		});
-	}, [debouncedDoi, debouncedCitation, metaDoi, metaCitation, setMeta]);
+	}, [debouncedDoi, debouncedCitation, setMeta]);
 
 	return (
 		<PanelBody title={__('DataCite DOI Schema')}>
