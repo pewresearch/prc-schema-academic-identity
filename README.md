@@ -1,5 +1,7 @@
 # PRC Schema – Academic Identity
 
+> Canonical docs: [docs/plugins/prc-schema-academic-identity/](../../docs/plugins/prc-schema-academic-identity/)
+
 Manages academic identity metadata (DOI, ORCID) for PRC Platform content and outputs Schema.org JSON-LD structured data.
 
 ## Overview
@@ -95,6 +97,7 @@ The `build` script runs two entries: `build:blocks` (the `doi-citation` block vi
 
 ## Related Docs
 
+- [Plugin docs hub](../../docs/plugins/prc-schema-academic-identity/)
 - [Open Science Wiki](https://platform.pewresearch.org/wiki/open-science)
 - [DataCite Schema documentation](https://schema.datacite.org/)
 - [Schema.org Dataset type](https://schema.org/Dataset)
