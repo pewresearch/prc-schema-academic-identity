@@ -21,9 +21,9 @@ runtime modules 3.09 KiB 5 modules
 built modules 9.42 KiB (javascript) 239 bytes (css/mini-extract) [1m[33m[built][39m[22m
   [1m./src/doi-citation/index.js + 13 modules[39m[22m 9.42 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
   css ../../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!../../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!../../node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]![1m./src/doi-citation/style.scss[39m[22m 239 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 3741 ms
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 3743 ms
 
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 204 ms
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 129 ms
 Block metadata PHP file generated at: build/blocks-manifest.php
 
 > @prc/schema-academic-identity@1.0.1 build:inspector-panel
@@ -34,4 +34,4 @@ asset [1m[32mindex.asset.php[39m[22m 244 bytes [1m[32m[emitted][39m[22m 
 Entrypoint [1mindex[39m[22m 3.77 KiB = [1m[32mindex.js[39m[22m 3.54 KiB [1m[32mindex.asset.php[39m[22m 244 bytes
 orphan modules 7.79 KiB [1m[33m[orphan][39m[22m 14 modules
 [1m./includes/inspector-sidebar-panel/src/index.js + 14 modules[39m[22m 10.2 KiB [1m[31m[not cacheable][39m[22m [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 2413 ms
+webpack 5.106.2 compiled [1m[32msuccessfully[39m[22m in 1949 ms
