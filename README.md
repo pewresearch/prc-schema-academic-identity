@@ -12,7 +12,7 @@ The plugin is part of PRC's Open Science initiative. See the [Wiki](https://plat
 
 ### Dependencies
 
-- **Upstream**: `prc-platform-core`, `prc-staff-bylines`, `prc-taxonomies` (Term Data Store / `PRC\TDS` for dataset taxonomy lookups; Composer package `prc/term-data-store`), VIP Block Data API (`vip_block_data_api__sourced_block_result`)
+- **Upstream**: `prc-platform-core`, `prc-staff-bylines`, `prc-taxonomies` (Term Data Store / `PRC\Primitives\TDS` for dataset taxonomy lookups; Composer package `prc/primitives`), VIP Block Data API (`vip_block_data_api__sourced_block_result`)
 - **Downstream**: Any template or pattern that places the `prc-block/doi-citation` block; any consumer of the `datacite_doi` REST field on post objects
 
 ## Architecture
@@ -26,29 +26,29 @@ The inspector sidebar panel is built separately (its own `wp-scripts` entry poin
 
 ### Key Files
 
-| Path | Purpose |
-|------|---------|
-| `prc-schema-academic-identity.php` | Plugin entry point; defines constants, bootstraps `Plugin` class |
-| `includes/class-plugin.php` | Loads dependencies, instantiates providers and blocks |
-| `includes/providers/datacite/class-datacite.php` | Registers `datacite_doi` / `datacite_doi_citation` post meta; REST fields; `wp_head` JSON-LD; editor panel enqueueing |
-| `includes/inspector-sidebar-panel/src/index.js` | Block editor `PluginSidebar` registration ("Academic Identity") |
-| `includes/inspector-sidebar-panel/src/datacite-doi-schema-panel.jsx` | Panel UI — JSON textarea for raw DataCite payload, live citation preview |
-| `shared/citation.jsx` | Shared `Citation` component and `extractDoiCitation` utility (parses JSON-LD, DataCite, and legacy `data.id` formats) |
-| `src/doi-citation/block.json` | Block metadata — `prc-block/doi-citation` |
-| `src/doi-citation/edit.jsx` | Block editor view; reads `datacite_doi_citation` meta via `useEntityProp` |
-| `src/doi-citation/render.php` | Server-side render; calls `Datacite::get_doi_citation()` to produce formatted citation HTML |
-| `build/doi-citation/class-doi-citation.php` | Block registration class; hooks `render_block` and `vip_block_data_api__sourced_block_result` |
+| Path                                                                 | Purpose                                                                                                               |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `prc-schema-academic-identity.php`                                   | Plugin entry point; defines constants, bootstraps `Plugin` class                                                      |
+| `includes/class-plugin.php`                                          | Loads dependencies, instantiates providers and blocks                                                                 |
+| `includes/providers/datacite/class-datacite.php`                     | Registers `datacite_doi` / `datacite_doi_citation` post meta; REST fields; `wp_head` JSON-LD; editor panel enqueueing |
+| `includes/inspector-sidebar-panel/src/index.js`                      | Block editor `PluginSidebar` registration ("Academic Identity")                                                       |
+| `includes/inspector-sidebar-panel/src/datacite-doi-schema-panel.jsx` | Panel UI — JSON textarea for raw DataCite payload, live citation preview                                              |
+| `shared/citation.jsx`                                                | Shared `Citation` component and `extractDoiCitation` utility (parses JSON-LD, DataCite, and legacy `data.id` formats) |
+| `src/doi-citation/block.json`                                        | Block metadata — `prc-block/doi-citation`                                                                             |
+| `src/doi-citation/edit.jsx`                                          | Block editor view; reads `datacite_doi_citation` meta via `useEntityProp`                                             |
+| `src/doi-citation/render.php`                                        | Server-side render; calls `Datacite::get_doi_citation()` to produce formatted citation HTML                           |
+| `build/doi-citation/class-doi-citation.php`                          | Block registration class; hooks `render_block` and `vip_block_data_api__sourced_block_result`                         |
 
 ## Hooks & Filters
 
-| Hook | Type | Description |
-|------|------|-------------|
-| `init` | action | Registers `datacite_doi` and `datacite_doi_citation` post meta on all public post types; registers the `prc-block/doi-citation` block |
-| `rest_api_init` | action | Registers a `datacite_doi` REST field on all public post types, returning the formatted plain-text citation string |
-| `enqueue_block_editor_assets` | action | Enqueues the inspector sidebar panel JS on supported post types |
-| `wp_head` | action | Outputs `<script type="application/ld+json">` with DataCite schema on singular posts, dataset taxonomy pages, and the dataset post type archive |
-| `render_block` | filter | Strips `prc-block/doi-citation` from `core/post-content` on singular `post` pages so the citation doesn't appear twice when a template pattern also includes it |
-| `vip_block_data_api__sourced_block_result` | filter | Injects the formatted citation string into the `content` attribute when the VIP Block Data API processes a `prc-block/doi-citation` block |
+| Hook                                       | Type   | Description                                                                                                                                                     |
+| ------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init`                                     | action | Registers `datacite_doi` and `datacite_doi_citation` post meta on all public post types; registers the `prc-block/doi-citation` block                           |
+| `rest_api_init`                            | action | Registers a `datacite_doi` REST field on all public post types, returning the formatted plain-text citation string                                              |
+| `enqueue_block_editor_assets`              | action | Enqueues the inspector sidebar panel JS on supported post types                                                                                                 |
+| `wp_head`                                  | action | Outputs `<script type="application/ld+json">` with DataCite schema on singular posts, dataset taxonomy pages, and the dataset post type archive                 |
+| `render_block`                             | filter | Strips `prc-block/doi-citation` from `core/post-content` on singular `post` pages so the citation doesn't appear twice when a template pattern also includes it |
+| `vip_block_data_api__sourced_block_result` | filter | Injects the formatted citation string into the `content` attribute when the VIP Block Data API processes a `prc-block/doi-citation` block                       |
 
 ## Local Development
 
@@ -86,8 +86,8 @@ The `build` script runs two entries: `build:blocks` (the `doi-citation` block vi
 ### Citation not resolving on dataset taxonomy pages
 
 **Symptom**: `Datacite::get_doi_citation()` returns nothing on a `datasets` taxonomy archive page.  
-**Cause**: The method calls `PRC\TDS\get_related_post()` to map the taxonomy term to its related dataset post. If Term Data Store returns `null` or the returned object has no `ID`, the method returns early.  
-**Fix**: Verify the `datasets` term has a related post configured via the Term Data Store plugin. Check that `PRC\TDS\get_related_post( $term_id, 'datasets' )` returns a valid post object.
+**Cause**: The method calls `PRC\Primitives\TDS\get_related_post()` to map the taxonomy term to its related dataset post. If Term Data Store returns `null` or the returned object has no `ID`, the method returns early.  
+**Fix**: Verify the `datasets` term has a related post configured through the term data store in `prc/primitives`. Check that `PRC\Primitives\TDS\get_related_post( $term_id, 'datasets' )` returns a valid post object.
 
 ### Inspector panel not appearing in the block editor
 
