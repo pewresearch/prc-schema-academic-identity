@@ -41,14 +41,14 @@ The inspector sidebar panel is built separately (its own `wp-scripts` entry poin
 
 ## Hooks & Filters
 
-| Hook                                       | Type   | Description                                                                                                                                                     |
-| ------------------------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `init`                                     | action | Registers `datacite_doi` and `datacite_doi_citation` post meta on all public post types; registers the `prc-block/doi-citation` block                           |
-| `rest_api_init`                            | action | Registers a `datacite_doi` REST field on all public post types, returning the formatted plain-text citation string                                              |
-| `enqueue_block_editor_assets`              | action | Enqueues the inspector sidebar panel JS on supported post types                                                                                                 |
-| `wp_head`                                  | action | Outputs `<script type="application/ld+json">` with DataCite schema on singular posts, dataset taxonomy pages, and the dataset post type archive                 |
-| `render_block`                             | filter | Strips `prc-block/doi-citation` from `core/post-content` on singular `post` pages so the citation doesn't appear twice when a template pattern also includes it |
-| `vip_block_data_api__sourced_block_result` | filter | Injects the formatted citation string into the `content` attribute when the VIP Block Data API processes a `prc-block/doi-citation` block                       |
+| Hook                                                 | Type   | Description                                                                                                                                                      |
+| ---------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init`                                               | action | Registers `datacite_doi` and `datacite_doi_citation` post meta on all public post types; registers the `prc-block/doi-citation` block                            |
+| `rest_api_init`                                      | action | Registers a `datacite_doi` REST field on all public post types, returning the formatted plain-text citation string                                               |
+| `enqueue_block_editor_assets`                        | action | Enqueues the inspector sidebar panel JS on supported post types                                                                                                  |
+| `wp_head`                                            | action | Outputs `<script type="application/ld+json">` with DataCite schema on singular posts, dataset taxonomy pages, and the dataset post type archive                  |
+| `strip_block_from_post_content()` (`prc/primitives`) | rule   | Removes `prc-block/doi-citation` from `core/post-content` on singular `post` pages so the citation doesn't appear twice when a template pattern also includes it |
+| `vip_block_data_api__sourced_block_result`           | filter | Injects the formatted citation string into the `content` attribute when the VIP Block Data API processes a `prc-block/doi-citation` block                        |
 
 ## Local Development
 
@@ -80,8 +80,8 @@ The `build` script runs two entries: `build:blocks` (the `doi-citation` block vi
 ### DOI Citation block is visible in post content and also in the template
 
 **Symptom**: The recommended citation appears twice on the frontend.  
-**Cause**: The `render_block` hook strips `prc-block/doi-citation` from `core/post-content` only on `is_singular('post')`. Other post types or template configurations where the block lives outside `core/post-content` will not be stripped.  
-**Fix**: Confirm the block is only placed inside the template pattern, not manually inserted into the post body. On non-`post` post types, adjust the `remove_doi_citation_from_post_content` condition in `class-doi-citation.php` if needed.
+**Cause**: The `prc/primitives` post-content rule strips `prc-block/doi-citation` from `core/post-content` only on `is_singular('post')`. Other post types or template configurations where the block lives outside `core/post-content` will not be stripped.  
+**Fix**: Confirm the block is only placed inside the template pattern, not manually inserted into the post body. On non-`post` post types, adjust the `DOI_Citation::is_singular_post()` condition in `class-doi-citation.php` if needed.
 
 ### Citation not resolving on dataset taxonomy pages
 

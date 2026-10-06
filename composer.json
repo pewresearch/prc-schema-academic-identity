@@ -6,7 +6,7 @@
 	"require": {
 		"php": ">=8.2",
 		"automattic/jetpack-autoloader": "^5.0",
-		"prc/primitives": "^2.0"
+		"prc/primitives": "^2.1"
 	},
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0.0"

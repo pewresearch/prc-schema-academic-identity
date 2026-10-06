@@ -7,6 +7,8 @@
 
 namespace PRC\Platform\Academic_Identity;
 
+use function PRC\Primitives\BlockUtils\strip_block_from_post_content;
+
 /**
  * Block Name:        Post DOI Citation
  * Version:           0.1.0
@@ -35,26 +37,20 @@ class DOI_Citation {
 		if ( null !== $loader ) {
 			$loader->add_action( 'init', $this, 'block_init' );
 			$loader->add_filter( 'vip_block_data_api__sourced_block_result', $this, 'add_data_to_vip_blocks_api', 10, 4 );
-			$loader->add_filter( 'render_block', $this, 'remove_doi_citation_from_post_content', 10, 3 );
+			strip_block_from_post_content( 'prc-block/doi-citation', array( $this, 'is_singular_post' ) );
 		}
 	}
 
 	/**
-	 * Remove the DOI citation from the post content as we display it
-	 * in a pattern in the template instead.
+	 * Whether the DOI citation is in the post content of a single post.
 	 *
-	 * @hook render_block
+	 * The template displays the citation through a pattern, so the block in
+	 * the content would print it twice.
 	 *
-	 * @param string $block_content The block content.
-	 * @param array  $block The block.
-	 * @param array  $wp_block The WP block.
-	 * @return string The block content.
+	 * @return bool
 	 */
-	public function remove_doi_citation_from_post_content( $block_content, $block, $wp_block ) {
-		if ( is_singular( 'post' ) && 'core/post-content' === $block['blockName'] ) {
-			$block_content = preg_replace( '/<p[^>]*class="[^"]*\bwp-block-prc-block-doi-citation\b[^"]*"[^>]*>.*?<\/p>/s', '', $block_content );
-		}
-		return $block_content;
+	public function is_singular_post(): bool {
+		return is_singular( 'post' );
 	}
 
 	/**
