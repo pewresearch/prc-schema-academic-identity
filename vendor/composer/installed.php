@@ -3,7 +3,7 @@
         'name' => 'prc/schema-academic-identity',
         'pretty_version' => 'dev-trunk',
         'version' => 'dev-trunk',
-        'reference' => 'cd0d9020756bd1f9395c0eabc73014ebea5c57df',
+        'reference' => '847ca35fd34500fceb3f320615f6f99880ececdf',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -121,7 +121,7 @@
         'prc/schema-academic-identity' => array(
             'pretty_version' => 'dev-trunk',
             'version' => 'dev-trunk',
-            'reference' => 'cd0d9020756bd1f9395c0eabc73014ebea5c57df',
+            'reference' => '847ca35fd34500fceb3f320615f6f99880ececdf',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
