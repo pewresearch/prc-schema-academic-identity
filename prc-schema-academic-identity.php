@@ -19,7 +19,7 @@
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       prc-academic-identity
- * Requires Plugins:  prc-scripts, prc-staff-bylines
+ * Requires Plugins:  prc-shared, prc-staff-bylines
  */
 
 namespace PRC\Platform\Academic_Identity;
