@@ -37,7 +37,7 @@ The inspector sidebar panel is built separately (its own `wp-scripts` entry poin
 | `src/doi-citation/block.json`                                        | Block metadata — `prc-block/doi-citation`                                                                             |
 | `src/doi-citation/edit.jsx`                                          | Block editor view; reads `datacite_doi_citation` meta via `useEntityProp`                                             |
 | `src/doi-citation/render.php`                                        | Server-side render; calls `Datacite::get_doi_citation()` to produce formatted citation HTML                           |
-| `build/doi-citation/class-doi-citation.php`                          | Block registration class; hooks `render_block` and `vip_block_data_api__sourced_block_result`                         |
+| `build/doi-citation/class-doi-citation.php`                          | Block registration class; hooks `vip_block_data_api__sourced_block_result` and adds the `prc/primitives` strip rule   |
 
 ## Hooks & Filters
 
